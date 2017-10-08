@@ -24,7 +24,7 @@ Unfortunately, spring boot always starts with production code, those integration
 
 3. Annotate `@Entity` with POJO class, spring boot automatically creates table in h2 database based on annotation
 
-4. Annotate `@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})` with POJO class due to Hibernate proxy object lazy loading. Hibernate is automatically included by spring boot. Please refer [this]:(https://stackoverflow.com/questions/24994440/no-serializer-found-for-class-org-hibernate-proxy-pojo-javassist-javassist) for more details
+4. Annotate `@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})` with POJO class due to Hibernate proxy object lazy loading. Hibernate is automatically included by spring boot. Please refer [this](https://stackoverflow.com/questions/24994440/no-serializer-found-for-class-org-hibernate-proxy-pojo-javassist-javassist) for more details
 
 
 
