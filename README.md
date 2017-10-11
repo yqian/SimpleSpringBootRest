@@ -16,11 +16,11 @@ This project is demonstration of Spring Boot with Rest Service and Data JPA
 
 ## Configure
 
-1. Define a YAML file called `application.yml` with h2 database settings to allow spring boot set it up during startup, `application.properties` is alternative, please see `src\main\resources\alternative-config` for details
+1. Define a YAML file called `application.yml` with h2 database settings to allow spring boot set it up during startup, `application.properties` is alternative, please see `src/main/resources/alternative-config` for details
 
 2. Define SQL INSERT to initialize h2 database  
 
-Unfortunately, spring boot always starts with production code, those integration test configure have to be placed inside `\src\main` instead of `src\test`
+Unfortunately, spring boot always starts with production code, those integration test configure have to be placed inside `src/main` instead of `src/test`
 
 3. Annotate `@Entity` with POJO class, spring boot automatically creates table in h2 database based on annotation
 
