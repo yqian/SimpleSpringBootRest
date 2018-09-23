@@ -53,7 +53,7 @@ public class UserRestController {
 		User user = service.getUser(id);
 		if (user == null)
 			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-		service.deleteUser(id);
+		service.deleteUser(user);
 		return new ResponseEntity<User>(HttpStatus.OK);
 	}
 

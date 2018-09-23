@@ -47,7 +47,11 @@ public class UserServiceImplTest {
 	@Test
 	@Rollback
 	public void testDeleteUser() {
-		userRepository.delete(10);
+		User u = new User();
+		u.setId(1);
+		u.setName("Joe Schmo");
+		u.setRole("U R Fired");
+		userRepository.delete(u);
 		List<User> uList = userRepository.findAll();
 		int expected = 2;
 		assertThat(uList.size()).isEqualTo(expected);
