@@ -37,7 +37,7 @@ Unfortunately, spring boot always starts with production code, those integration
 
 3. Test using curl command
 
-*Test "GET"
+* Test "GET"
 
 `curl http://localhost:8080/user/list` will display all the users in h2 database
 
