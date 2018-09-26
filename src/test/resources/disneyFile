@@ -1,0 +1,192 @@
+ackage org.yqian.disney.config;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+@Configuration
+@EnableSwagger2
+public class SwaggerConfig {
+    @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("org.yqian.disney.controller"))
+                .paths(PathSelectors.any())
+                .build();
+    }
+}
+
+package org.yqian.disney.controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.yqian.disney.model.User;
+import org.yqian.disney.service.UserService;
+import java.util.List;
+@RestController
+@RequestMapping("/api")
+public class UserController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    @Autowired
+    private UserService service;
+    @GetMapping("/user/{id}")
+    public ResponseEntity<User> getUser(@PathVariable("id") int id) {
+        LOGGER.info("get User by ID " + id);
+        User u = service.getUser(id);
+        if (u == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(u, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/user")
+    public ResponseEntity<List<User>> listUsers() {
+        LOGGER.info("Get all user info");
+        List<User> list = service.listUser();
+        if (list.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/user/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable("id") int id, @RequestBody User u) {
+        User user = service.getUser(id);
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        service.updateUser(u);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/user/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("id") int id) {
+        User user = service.getUser(id);
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        service.deleteUser(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/user/clear")
+    public ResponseEntity<List<User>> deleteAllUser() {
+        service.deleteAllUser();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+}
+
+package org.yqian.disney.model;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.io.Serializable;
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class User implements Serializable {
+    @Id
+    private int id;
+    private String firstName;
+    private String lastName;
+    private char[] password;
+}
+
+package org.yqian.disney.repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.yqian.disney.model.User;
+public interface UserRepository extends JpaRepository<User, Integer> {
+}
+
+package org.yqian.disney.service;
+import org.yqian.disney.model.User;
+import java.util.List;
+public interface UserService {
+
+    List<User> listUser();
+    User getUser(int id);
+    void updateUser(User u);
+    void deleteUser(User u);
+    void deleteAllUser();
+}
+
+package org.yqian.disney.service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.yqian.disney.model.User;
+import org.yqian.disney.repository.UserRepository;
+import java.util.List;
+@Service("userService")
+public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+    @Override
+    public List<User> listUser() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public User getUser(int id) {
+        return userRepository.getOne(id);
+    }
+
+    @Override
+    public void updateUser(User u) {
+        userRepository.save(u);
+    }
+
+    @Override
+    public void deleteUser(User u) {
+        userRepository.delete(u);
+    }
+
+    @Override
+    public void deleteAllUser() {
+        userRepository.deleteAll();
+    }
+}
+
+package org.yqian.disney;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+@SpringBootApplication(scanBasePackages = {"org.yqian.disney"})
+public class DisneyUserApp {
+    public static void main(String[] args) {
+        SpringApplication.run(DisneyUserApp.class, args);
+    }
+}
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    platform: h2
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+    properties:
+      show_sql: true
+      use_sql_comments: true
+      format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2_console
+      settings:
+        trace: false
+        web-allow-others: false
+  logging:
+    level:
+      org.yqian.SimpleSpringBootRest: INFO
+      
+   
