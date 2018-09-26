@@ -12,6 +12,7 @@ This project is demonstration of Spring Boot with Rest Service and Data JPA
 
 4. Use h2 in memory database, add dependency in pom.xml, spring boot automatically creates h2 database instance during startup
 
+5. Use Swagger2 for testing
 
 
 ## Configure
@@ -32,22 +33,26 @@ Unfortunately, spring boot always starts with production code, those integration
 
 1. Start the project `mvn spirng-boot:run`
 
-2. Test "GET"
+2. Open browser `http://localhost:8080/swagger-ui.html`
 
-`curl http://locolhost:8080/user/list` will display all the users in h2 database
+3. Test using curl command
+
+*Test "GET"
+
+`curl http://localhost:8080/user/list` will display all the users in h2 database
 
 `curl http://localhost:8080/usr/1` will display single user with ID 1
 
-3. Test "UPDATE"
+* Test "UPDATE"
 
 `curl -H "Content-Type: application/json" -X "PUT" -d '{"id":1,"name":"Joe Schmo","role":"U R Fired"}' http://localhost:8080/user/1` will update the user record in h2 database.
 
-4. Test "DELETE"
+* Test "DELETE"
 
 `curl -X "DELETE" http://localhost:8080/user/1` will delete user with ID 1 from h2 database
 
 `curl -X "DELETE" http://localhost:8080/user/clear` will delete all users from h2 database
 
-5. Verify result  
+4. Verify result
 
 To verify it, access h2 database `http://localhost:8080/h2_console`, run `SELECT * FROM user`
